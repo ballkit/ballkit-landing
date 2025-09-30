@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight } from "lucide-react";
 import axios from "axios";
-import { BOOK_LINK, BOOK_NOTIFY_LINK } from "@/lib/consts";
+import { BOOK_LINK, BOOK_NOTIFY_LINK, CONTACT_EMAIL } from "@/lib/consts";
 
 interface BookingDialogProps {
   open: boolean;
@@ -28,17 +28,25 @@ const BookingDialog = ({ open, onOpenChange }: BookingDialogProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    axios.get(`${BOOK_NOTIFY_LINK}?firstName=${name}&lastName=${lastName}&email=${email}&company=${company}&description=${description}`)
-      .then((response) => {
-        console.log('Заявка успешно отправлена:', response.data);
-      })
-      .catch((error) => {
-        console.error('Ошибка при отправке заявки:', error.response?.data || error.message);
-      })
-      .finally(() => {
-        window.location.href = "/booking-success";
-      });
+    const subject = `Заявка на демо Ballkit — ${name} ${lastName}, ${company}`;
+    const body = `Здравствуйте!
+
+  Хочу забронировать демо Ballkit.
+  Мои данные:
+
+  Имя: ${name}
+  Фамилия: ${lastName}
+  Email: ${email}
+  Компания: ${company}
+  Описание деятельности: ${description}
+
+  Буду ждать вашего ответа.`;
+
+    window.open(
+      `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    );
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
